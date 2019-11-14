@@ -1,4 +1,4 @@
-import store from "./store";
+import store from "./store/index";
 // import VueDevtools from 'nativescript-vue-devtools'
 import Vue from "nativescript-vue";
 import App from "./components/App";
