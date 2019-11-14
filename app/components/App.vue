@@ -2,7 +2,7 @@
   <Page class="page">
     <ActionBar title="Home" class="action-bar" />
     <StackLayout>
-      <Button @tap="goToSecond" text="Go to Second"></Button>
+      <Button text="Go to Second" @tap="goToSecond" />
     </StackLayout>
   </Page>
 </template>
