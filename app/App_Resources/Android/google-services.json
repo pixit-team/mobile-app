@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "451561193010",
+    "firebase_url": "https://pixit-0.firebaseio.com",
+    "project_id": "pixit-0",
+    "storage_bucket": "pixit-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451561193010:android:c760c6ad7f13ba3f54c62b",
+        "android_client_info": {
+          "package_name": "com.pixit.pixit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451561193010-45qu40b8cvfurh9e7bdk4vdvs2njghrr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSHOSpaChM-yyxozwd5KMUtiLOx_uH88A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451561193010-45qu40b8cvfurh9e7bdk4vdvs2njghrr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
