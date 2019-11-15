@@ -27,15 +27,18 @@
         secure
       />
       <Button
+        :isEnabled="!loading"
         text="Register"
         class="btn btn-primary btn-rounded-sm"
         @tap="onConfirm"
       />
       <Button
+        :isEnabled="!loading"
         text="Or login"
         class="btn btn-outline btn-rounded-sm"
         @tap="$navigateBack"
       />
+      <ActivityIndicator :busy="loading" />
     </StackLayout>
   </Page>
 </template>
@@ -55,28 +58,31 @@ export default {
 
   data() {
     return {
-      email: "",
-      name: "",
-      password: "",
+      email: "pierre.said@epitech.eu",
+      name: "Pierre",
+      password: "zefZEF123!",
       emailError: false,
       nameError: false,
-      passwordError: false
+      passwordError: false,
+      loading: false
     };
   },
   methods: {
     ...mapActions("user", ["Register"]),
-    onConfirm() {
+    async onConfirm() {
       this.emailError = !validateEmail(this.email);
       this.nameError = !validateName(this.name);
       this.passwordError = !validatePassword(this.password);
       if (this.emailError || this.nameError || this.passwordError) {
         return;
       }
-      this.Register({
+      this.loading = true;
+      await this.Register({
         email: this.email,
         name: this.name,
         password: this.password
       });
+      this.loading = false;
     }
   }
 };

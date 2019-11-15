@@ -9,14 +9,24 @@
 
 <script>
 import Login from "./pages/Login";
-
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {};
   },
+  computed: {
+    ...mapGetters("user", ["loggedIn"])
+  },
+  mounted() {
+    if (this.loggedIn) {
+      console.log("REDIRECTION !");
+      this.$navigateTo(Login);
+    }
+    // console.log("Is the Pelo Logged in ?: ", this.loggedIn);
+  },
   methods: {
     goToSecond() {
-      this.$navigateTo(Login);
+      console.log("kiloutou");
     }
   }
 };

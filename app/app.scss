@@ -1,9 +1,11 @@
 // NativeScript core theme
 // @see https://docs.nativescript.org/ui/theme
 @import '~nativescript-theme-core/scss/ruby';
-
+@import '~nativescript-theme-core/scss/dark';
 // Override variables here
-
+* {
+    color: white;
+}
 @import '~nativescript-theme-core/scss/index';
 
 // Global SCSS styling
