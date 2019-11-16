@@ -10,3 +10,11 @@
 
 // Global SCSS styling
 // @see https://docs.nativescript.org/ui/styling
+
+.input::placeholder {
+  color: white;
+}
+
+.input {
+  color: white;
+}
