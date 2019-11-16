@@ -1,13 +1,11 @@
-import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
+import axios from "axios";
 const appSettings = require("tns-core-modules/application-settings");
-
-const userInAppSettings = appSettings.getString("user");
 
 export default {
   state: {
-    user: userInAppSettings ? userInAppSettings : null,
-    token: appSettings.getString("token")
+    user: null,
+    token: null
   },
   getters: {
     user(state) {
@@ -22,7 +20,6 @@ export default {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       appSettings.setString("token", token);
       appSettings.setString("user", JSON.stringify(user));
-      // TODO Set appSettings
       state.user = user;
       state.token = token;
     },
@@ -34,14 +31,17 @@ export default {
     }
   },
   actions: {
-    async Logout({ commit }) {
-      commit("LOGOUT");
+    async SetUserData({ commit }, credentials) {
+      commit("SET_USER", credentials);
     },
     async Login({ commit }, credentials) {
       const res = await axios.post("/auth/local/login/", credentials);
       if (res.status === 200) {
         commit("SET_USER", res.data);
       }
+    },
+    async Logout({ commit }) {
+      commit("LOGOUT");
     },
     async Register({ dispatch }, credentials) {
       const firebaseToken = await firebase.getCurrentPushToken();
@@ -50,7 +50,6 @@ export default {
         firebaseToken
       });
       if (res.status === 201) {
-        console.log("Hooray : ", res);
         return await dispatch("Login", credentials);
       }
     }

@@ -5,6 +5,7 @@ import App from "./src/App";
 import Login from "./src/pages/Login";
 import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
+const appSettings = require("tns-core-modules/application-settings");
 
 // axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.baseURL = "http://3d5c18ae.ngrok.io";
@@ -20,6 +21,18 @@ Vue.registerElement(
   () => require("nativescript-ui-sidedrawer").RadSideDrawer
 );
 
+// Get User from appSettings and set the store
+let userIsLoggedIn = false;
+const userInAppSettings = appSettings.getString("user");
+const tokenInAppSettings = appSettings.getString("token");
+if (userInAppSettings && tokenInAppSettings) {
+  userIsLoggedIn = true;
+  store.dispatch("user/SetUserData", {
+    user: JSON.parse(userInAppSettings),
+    token: tokenInAppSettings
+  });
+}
+
 new Vue({
   store,
   components: {
@@ -31,24 +44,14 @@ new Vue({
       .init({
         showNotifications: true,
         showNotificationsWhenInForeground: true,
-
-        onPushTokenReceivedCallback: token => {
-          // console.log("[Firebase] onPushTokenReceivedCallback:", { token });
-        },
-
-        onMessageReceivedCallback: message => {
-          // console.log("[Firebase] onMessageReceivedCallback:", { message });
-        }
+        onPushTokenReceivedCallback: token => {},
+        onMessageReceivedCallback: message => {}
       })
-      .then(() => {
-        // console.log("[Firebase] Initialized");
-      })
-      .catch(error => {
-        // console.log("[Firebase] Initialize", { error });
-      });
+      .then(() => {})
+      .catch(error => {});
   },
   template: `
       <Frame>
-      <${store.getters["user/loggedIn"] ? "App" : "Login"} />
+      <${userIsLoggedIn ? "App" : "Login"} />
       </Frame>`
 }).$start();
