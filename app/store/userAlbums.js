@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   state: {
     albums: [],
-    loading: true
+    loading: false
   },
   getters: {
     albums(state) {
@@ -22,9 +22,8 @@ export default {
     async GetAlbums({ commit }) {
       commit("SET_LOADING", true);
       try {
-        const res = await axios.get("/albums");
+        const res = await axios.get("/albums/myAlbums");
         if (res.status === 200) {
-          console.log("SEting Albums");
           commit("SET_ALBUMS", res.data.albums);
           commit("SET_LOADING", false);
           return res;
@@ -33,6 +32,16 @@ export default {
         console.log("Error : ", error);
       }
       commit("SET_LOADING", false);
+    },
+    async AddAlbum({ commit, dispatch }, name) {
+      try {
+        const res = await axios.post("/albums", name);
+        if (res.status === 201) {
+          return await dispatch("GetAlbums");
+        }
+      } catch (error) {
+        console.log("Error : ", error);
+      }
     }
   },
   namespaced: true
