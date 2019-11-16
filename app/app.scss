@@ -3,7 +3,7 @@
 @import '~nativescript-theme-core/scss/ruby';
 @import '~nativescript-theme-core/scss/dark';
 // Override variables here
-* {
+label {
     color: white;
 }
 @import '~nativescript-theme-core/scss/index';
@@ -11,10 +11,3 @@
 // Global SCSS styling
 // @see https://docs.nativescript.org/ui/styling
 
-.input::placeholder {
-  color: white;
-}
-
-.input {
-  color: white;
-}

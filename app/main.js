@@ -6,8 +6,8 @@ import Login from "./src/pages/Login";
 import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
 
-// axios.defaults.baseURL = "http://192.168.1.71:5000";
-axios.defaults.baseURL = "http://999c69cc.ngrok.io/";
+// axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://3d5c18ae.ngrok.io";
 // if(TNS_ENV !== 'production') {
 //   Vue.use(VueDevtools, { host: '192.168.1.71' })
 // }

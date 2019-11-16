@@ -1,15 +1,24 @@
 <template>
   <Page class="page">
-    <ActionBar title="Home" class="action-bar" />
+    <ActionBar title="Home" class="action-bar">
+      <ActionItem
+        ios.systemIcon="16"
+        ios.position="right"
+        text="Logout"
+        android.position="popup"
+        @tap="loginTapped"
+      ></ActionItem>
+    </ActionBar>
     <StackLayout>
-      <Button text="Go to Login" @tap="goToSecond" />
+      <Label text="Welcome To Pixit !" />
     </StackLayout>
   </Page>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 import Login from "./pages/Login";
-import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {};
@@ -17,16 +26,12 @@ export default {
   computed: {
     ...mapGetters("user", ["loggedIn"])
   },
-  mounted() {
-    if (this.loggedIn) {
-      console.log("REDIRECTION !");
-      this.$navigateTo(Login);
-    }
-    // console.log("Is the Pelo Logged in ?: ", this.loggedIn);
-  },
+  mounted() {},
   methods: {
-    goToSecond() {
-      console.log("kiloutou");
+    ...mapActions("user", ["Logout"]),
+    loginTapped() {
+      this.Logout();
+      this.$navigateTo(Login);
     }
   }
 };

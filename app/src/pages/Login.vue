@@ -1,7 +1,7 @@
 <template>
   <Page class="page">
     <ActionBar title="Login" class="action-bar" />
-    <StackLayout>
+    <StackLayout class="form m-20">
       <InputWithError
         v-model="email"
         hint="Email"
@@ -26,12 +26,18 @@
         class="btn btn-primary btn-rounded-sm"
         @tap="login"
       />
-      <Button text="Or Register" @tap="goToRegister"></Button>
+      <Button
+        text="Or Register"
+        class="btn btn-outline btn-rounded-sm"
+        @tap="goToRegister"
+      />
+      <ActivityIndicator :busy="loading" />
     </StackLayout>
   </Page>
 </template>
 
 <script>
+import App from "../App";
 import Register from "./Register.vue";
 import InputWithError from "../components/InputWithError.vue";
 import { validateEmail, validatePassword } from "../../utils/validator";
@@ -41,22 +47,35 @@ import { mapActions } from "vuex";
 export default {
   components: { InputWithError },
   data() {
-    return {};
+    return {
+      email: "pierrot.said@epitech.eu",
+      password: "zefZEF123!",
+      emailError: false,
+      passwordError: false,
+      loading: false
+    };
   },
-  ...mapActions("user", ["Login"]),
   methods: {
+    ...mapActions("user", ["Login"]),
     async login() {
       this.emailError = !validateEmail(this.email);
       this.passwordError = !validatePassword(this.password);
-      if (this.emailError || this.nameError || this.passwordError) {
+      if (this.emailError || this.passwordError) {
         return;
       }
       this.loading = true;
-      await this.Login({
-        email: this.email,
-        password: this.password
-      });
-      this.loading = false;
+      try {
+        await this.Login({
+          email: this.email,
+          password: this.password
+        });
+        this.loading = false;
+        this.$navigateTo(App);
+      } catch (error) {
+        this.loading = false;
+        console.log("Error : ", error);
+        //TODO Toast
+      }
     },
     goToRegister() {
       this.$navigateTo(Register);
@@ -65,14 +84,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.input::placeholder {
-  color: white;
-  background-color: black;
-}
-
-.input {
-  background-color: black;
-  color: white;
-}
-</style>
+<style scoped></style>
