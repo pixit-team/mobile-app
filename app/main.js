@@ -8,11 +8,7 @@ import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
 const appSettings = require("tns-core-modules/application-settings");
 
-// axios.defaults.baseURL = "http://localhost:5000";
-axios.defaults.baseURL = "http://d1cfa5b6.ngrok.io";
-// if(TNS_ENV !== 'production') {
-//   Vue.use(VueDevtools, { host: '192.168.1.71' })
-// }
+axios.defaults.baseURL = "https://pixit-api.herokuapp.com/";
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = TNS_ENV === "production";
