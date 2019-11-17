@@ -3,6 +3,7 @@ import store from "./store/index";
 import Vue from "nativescript-vue";
 import App from "./src/App";
 import Login from "./src/pages/Login";
+import Camera from "./src/pages/Camera";
 import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
 
@@ -24,7 +25,8 @@ new Vue({
   store,
   components: {
     App,
-    Login
+    Login,
+    Camera
   },
   created() {
     firebase
@@ -49,6 +51,6 @@ new Vue({
   },
   template: `
       <Frame>
-      <${store.getters["user/loggedIn"] ? "App" : "Login"} />
+        <Camera/>
       </Frame>`
 }).$start();
