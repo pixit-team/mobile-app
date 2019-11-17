@@ -45,6 +45,8 @@
 
 <script>
 import InputWithError from "../components/InputWithError.vue";
+import App from "../App";
+
 import {
   validateEmail,
   validateName,
@@ -52,13 +54,12 @@ import {
 } from "../../utils/validator";
 
 import { mapActions } from "vuex";
-
 export default {
   components: { InputWithError },
 
   data() {
     return {
-      email: "pierre.said@epitech.eu",
+      email: "pierrot.said@epitech.eu",
       name: "Pierre",
       password: "zefZEF123!",
       emailError: false,
@@ -77,12 +78,19 @@ export default {
         return;
       }
       this.loading = true;
-      await this.Register({
-        email: this.email,
-        name: this.name,
-        password: this.password
-      });
-      this.loading = false;
+      try {
+        await this.Register({
+          email: this.email,
+          name: this.name,
+          password: this.password
+        });
+        this.loading = false;
+        this.$navigateTo(App);
+      } catch (error) {
+        this.loading = false;
+        console.log("Error : ", error);
+        // TODO Error Toast
+      }
     }
   }
 };

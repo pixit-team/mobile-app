@@ -1,11 +1,11 @@
-import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
+import axios from "axios";
 const appSettings = require("tns-core-modules/application-settings");
 
 export default {
   state: {
     user: null,
-    token: appSettings.getString("token")
+    token: null
   },
   getters: {
     user(state) {
@@ -19,43 +19,38 @@ export default {
     SET_USER(state, { user, token }) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       appSettings.setString("token", token);
-      // TODO Set appSettings
+      appSettings.setString("user", JSON.stringify(user));
       state.user = user;
       state.token = token;
     },
     LOGOUT(state) {
       state.user = null;
       state.token = null;
+      appSettings.remove("token");
+      appSettings.remove("user");
     }
   },
   actions: {
+    async SetUserData({ commit }, credentials) {
+      commit("SET_USER", credentials);
+    },
     async Login({ commit }, credentials) {
-      try {
-        const res = await axios.post("/auth/local/login/", credentials);
-        if (res.status === 200) {
-          console.log("Login OK ! : ", res);
-
-          commit("SET_USER", res.data);
-        }
-      } catch (error) {
-        console.log("Error : ", error);
-        //TODO Toast
+      const res = await axios.post("/auth/local/login/", credentials);
+      if (res.status === 200) {
+        commit("SET_USER", res.data);
       }
+    },
+    async Logout({ commit }) {
+      commit("LOGOUT");
     },
     async Register({ dispatch }, credentials) {
       const firebaseToken = await firebase.getCurrentPushToken();
-      try {
-        const res = await axios.post("/auth/local/register/", {
-          ...credentials,
-          firebaseToken
-        });
-        if (res.status === 201) {
-          console.log("Hooray : ", res);
-          return await dispatch("Login", credentials);
-        }
-      } catch (error) {
-        console.log("Error : ", error);
-        // TODO Error Toast
+      const res = await axios.post("/auth/local/register/", {
+        ...credentials,
+        firebaseToken
+      });
+      if (res.status === 201) {
+        return await dispatch("Login", credentials);
       }
     }
   },

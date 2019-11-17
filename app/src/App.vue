@@ -1,32 +1,27 @@
 <template>
   <Page class="page">
-    <ActionBar title="Home" class="action-bar" />
+    <ActionBar title="Pixit" class="action-bar">
+      <ActionItem
+        ios.systemIcon="16"
+        ios.position="right"
+        text="Logout"
+        android.position="popup"
+        @tap="logoutTapped"
+      ></ActionItem>
+    </ActionBar>
     <StackLayout>
-      <Button text="Go to Login" @tap="goToSecond" />
+      <Button text="Go to My Albums" @tap="goToUserAlbums" />
     </StackLayout>
   </Page>
 </template>
 
 <script>
-import Login from "./pages/Login";
-import { mapGetters } from "vuex";
+import UserAlbums from "./pages/UserAlbums.vue";
+
 export default {
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapGetters("user", ["loggedIn"])
-  },
-  mounted() {
-    if (this.loggedIn) {
-      console.log("REDIRECTION !");
-      this.$navigateTo(Login);
-    }
-    // console.log("Is the Pelo Logged in ?: ", this.loggedIn);
-  },
   methods: {
-    goToSecond() {
-      console.log("kiloutou");
+    goToUserAlbums() {
+      this.$navigateTo(UserAlbums);
     }
   }
 };

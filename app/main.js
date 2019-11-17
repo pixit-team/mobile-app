@@ -6,9 +6,10 @@ import Login from "./src/pages/Login";
 import Camera from "./src/pages/Camera";
 import axios from "axios";
 import * as firebase from "nativescript-plugin-firebase";
+const appSettings = require("tns-core-modules/application-settings");
 
-// axios.defaults.baseURL = "http://192.168.1.71:5000";
-axios.defaults.baseURL = "http://999c69cc.ngrok.io/";
+// axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://d1cfa5b6.ngrok.io";
 // if(TNS_ENV !== 'production') {
 //   Vue.use(VueDevtools, { host: '192.168.1.71' })
 // }
@@ -20,6 +21,18 @@ Vue.registerElement(
   "RadSideDrawer",
   () => require("nativescript-ui-sidedrawer").RadSideDrawer
 );
+
+// Get User from appSettings and set the store
+let userIsLoggedIn = false;
+const userInAppSettings = appSettings.getString("user");
+const tokenInAppSettings = appSettings.getString("token");
+if (userInAppSettings && tokenInAppSettings) {
+  userIsLoggedIn = true;
+  store.dispatch("user/SetUserData", {
+    user: JSON.parse(userInAppSettings),
+    token: tokenInAppSettings
+  });
+}
 
 new Vue({
   store,
@@ -33,24 +46,14 @@ new Vue({
       .init({
         showNotifications: true,
         showNotificationsWhenInForeground: true,
-
-        onPushTokenReceivedCallback: token => {
-          // console.log("[Firebase] onPushTokenReceivedCallback:", { token });
-        },
-
-        onMessageReceivedCallback: message => {
-          // console.log("[Firebase] onMessageReceivedCallback:", { message });
-        }
+        onPushTokenReceivedCallback: token => {},
+        onMessageReceivedCallback: message => {}
       })
-      .then(() => {
-        // console.log("[Firebase] Initialized");
-      })
-      .catch(error => {
-        // console.log("[Firebase] Initialize", { error });
-      });
+      .then(() => {})
+      .catch(error => {});
   },
   template: `
       <Frame>
-        <Camera/>
+      <${userIsLoggedIn ? "App" : "Login"} />
       </Frame>`
 }).$start();

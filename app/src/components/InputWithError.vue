@@ -2,6 +2,7 @@
   <StackLayout>
     <TextField
       class="input input-rounded m-t-10"
+      color="white"
       :maxLength="80"
       v-bind="$attrs"
       :text="value"
@@ -27,4 +28,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.input {
+  placeholder-color: #ffffff;
+}
+</style>
