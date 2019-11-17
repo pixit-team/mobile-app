@@ -34,7 +34,7 @@ export default {
   components: { InputWithError },
   data() {
     return {
-      name: "My family album",
+      name: "",
       nameError: false,
       loading: false
     };

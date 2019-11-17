@@ -48,8 +48,8 @@ export default {
   components: { InputWithError },
   data() {
     return {
-      email: "pierrot.said@epitech.eu",
-      password: "zefZEF123!",
+      email: "",
+      password: "",
       emailError: false,
       passwordError: false,
       loading: false

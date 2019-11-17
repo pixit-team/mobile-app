@@ -59,9 +59,9 @@ export default {
 
   data() {
     return {
-      email: "pierrot.said@epitech.eu",
-      name: "Pierre",
-      password: "zefZEF123!",
+      email: "",
+      name: "",
+      password: "",
       emailError: false,
       nameError: false,
       passwordError: false,
