@@ -40,6 +40,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import AddAlbum from "./AddAlbum.vue";
+import AlbumView from "./AlbumView.vue";
 
 export default {
   computed: {
@@ -50,15 +51,16 @@ export default {
   },
   methods: {
     ...mapActions("userAlbums", ["GetAlbums"]),
-    async reload() {
-      this.loading = true;
-      await this.GetAlbums();
-      this.loading = false;
-    },
     addTapped() {
       this.$navigateTo(AddAlbum);
     },
-    onItemTap() {}
+    onItemTap(event) {
+      this.$navigateTo(AlbumView, {
+        props: {
+          albumInfo: event.item
+        }
+      });
+    }
   }
 };
 </script>

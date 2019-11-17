@@ -1,5 +1,5 @@
 <template>
-  <Page class="page" @loaded="onLoaded">
+  <Page class="page">
     <ActionBar title="Pixit" class="action-bar">
       <ActionItem
         ios.systemIcon="16"
