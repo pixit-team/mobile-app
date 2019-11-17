@@ -93,11 +93,11 @@ export default {
       });
     },
     addTapped() {
-      // this.$navigateTo(Camera, {
-      //   props: {
-      //     albumUuid: this.this.albumInfo.uuid
-      //   }
-      // });
+      this.$navigateTo(Camera, {
+        props: {
+          albumUuid: this.this.albumInfo.uuid
+        }
+      });
     }
   }
 };
