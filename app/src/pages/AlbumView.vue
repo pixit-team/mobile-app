@@ -1,6 +1,6 @@
 <template>
   <Page class="page" @navigatingTo="onNavigatingTo">
-    <ActionBar :title="albumInfo.name" class="action-bar">
+    <ActionBar :title="album ? album.name : '...'" class="action-bar">
       <NavigationButton
         text="Go Back"
         android.systemIcon="ic_menu_back"
@@ -10,7 +10,7 @@
         v-if="album && inAlbum"
         android.systemIcon="ic_menu_add"
         android.position="actionBar"
-        @tap="joining || addTapped"
+        @tap="addTapped"
       ></ActionItem>
     </ActionBar>
     <StackLayout>
