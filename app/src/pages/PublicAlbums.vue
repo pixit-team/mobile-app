@@ -1,16 +1,11 @@
 <template>
-  <Page class="page" @navigatingTo="onNavigatingTo">
-    <ActionBar title="My Albums" class="action-bar">
+  <Page class="page">
+    <ActionBar title="Discover Albums" class="action-bar">
       <NavigationButton
         text="Go Back"
         android.systemIcon="ic_menu_back"
         @tap="$navigateBack"
       />
-      <ActionItem
-        android.systemIcon="ic_menu_add"
-        android.position="actionBar"
-        @tap="addTapped"
-      ></ActionItem>
     </ActionBar>
     <StackLayout>
       <FlexBoxLayout
@@ -38,22 +33,17 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import AddAlbum from "./AddAlbum.vue";
 import AlbumView from "./AlbumView.vue";
 
 export default {
-  props: ["toAlbum"],
   computed: {
-    ...mapState("userAlbums", ["albums", "loading"])
+    ...mapState("publicAlbums", ["albums", "loading"])
   },
   async created() {
     await this.GetAlbums();
   },
   methods: {
-    ...mapActions("userAlbums", ["GetAlbums"]),
-    addTapped() {
-      this.$navigateTo(AddAlbum);
-    },
+    ...mapActions("publicAlbums", ["GetAlbums"]),
     onItemTap(event) {
       this.$navigateTo(AlbumView, {
         props: {

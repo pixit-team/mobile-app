@@ -1,7 +1,11 @@
 <template>
   <Page class="page">
-    <ActionBar class="action-bar">
-      <Label class="action-bar-title" text="Home"></Label>
+    <ActionBar title="Camera" class="action-bar">
+      <NavigationButton
+        text="Go Back"
+        android.systemIcon="ic_menu_back"
+        @tap="$navigateBack"
+      />
     </ActionBar>
 
     <GridLayout rows="auto, *, auto, auto">
@@ -15,6 +19,7 @@
       />
       <Button
         v-if="cameraImage == null"
+        class="btn btn-primary btn-rounded-sm"
         row="3"
         text="Take Picture"
         padding="10"
@@ -22,7 +27,9 @@
       />
       <Button
         v-else
+        :isEnabled="!loading"
         row="3"
+        class="btn btn-primary btn-rounded-sm"
         text="Share the picture"
         padding="10"
         @tap="submitPicture"
@@ -33,9 +40,8 @@
 
 <script>
 import { ImageSource } from "tns-core-modules/image-source";
-import AlbumView from "./AlbumView";
 import axios from "axios";
-
+import { mapActions } from "vuex";
 export default {
   name: "Camera",
   props: ["albumUuid"],
@@ -48,10 +54,12 @@ export default {
       height: 240,
       cameraImage: null,
       labelText: "",
-      base64Image: null
+      base64Image: null,
+      loading: false
     };
   },
   methods: {
+    ...mapActions("userAlbums", ["SetAddedPhoto"]),
     onTakePictureTap: function() {
       var camera = require("nativescript-camera");
       // eslint-disable-next-line no-unused-vars
@@ -70,8 +78,8 @@ export default {
               this.cameraImage = imageAsset;
               ImageSource.fromAsset(imageAsset).then(res => {
                 let myImageSource = res;
-                var base64 = myImageSource.toBase64String("jpeg", 100);
-                this.base64Image = base64;
+                var base64 = myImageSource.toBase64String("jpeg", 30);
+                this.base64Image = "data:Image/png;base64," + base64;
               });
             })
             .catch(function(err) {
@@ -82,7 +90,7 @@ export default {
       );
     },
     async submitPicture() {
-      console.log("Base64 => ", this.base64Image);
+      this.loading = true;
       try {
         const res = await axios.post(`/albums/${this.albumUuid}/photo-add`, {
           img: this.base64Image
@@ -91,11 +99,13 @@ export default {
           this.cameraImage = null;
           this.base64Image = null;
           const image = res.data.photo;
-          console.log("Image => ", image);
-          this.$navigateTo(AlbumView, { props: { image } });
+          this.SetAddedPhoto(image);
+          this.loading = false;
+          this.$navigateBack();
         }
       } catch (e) {
         console.log("error : ", e.message);
+        this.loading = false;
       }
     }
   }

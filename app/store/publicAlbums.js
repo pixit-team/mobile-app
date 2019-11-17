@@ -3,8 +3,7 @@ import axios from "axios";
 export default {
   state: {
     albums: [],
-    loading: false,
-    added_photo: null
+    loading: false
   },
   getters: {
     albums(state) {
@@ -18,23 +17,16 @@ export default {
     SET_LOADING(state, loading) {
       state.loading = loading;
     },
-    ADDED_PHOTO(state, added_photo) {
-      state.added_photo = added_photo;
-    },
     RESET(state) {
       state.albums = [];
       state.loading = false;
-      state.added_photo = null;
     }
   },
   actions: {
-    async SetAddedPhoto({ commit }, added_photo) {
-      commit("ADDED_PHOTO", added_photo);
-    },
     async GetAlbums({ commit }) {
       commit("SET_LOADING", true);
       try {
-        const res = await axios.get("/albums/myAlbums");
+        const res = await axios.get("/albums/");
         if (res.status === 200) {
           commit("SET_ALBUMS", res.data.albums);
           commit("SET_LOADING", false);
@@ -45,11 +37,13 @@ export default {
       }
       commit("SET_LOADING", false);
     },
-    async AddAlbum({ commit, dispatch }, name) {
+    async JoinAlbum({ dispatch }, albumUuid) {
       try {
-        const res = await axios.post("/albums", name);
-        if (res.status === 201) {
-          return await dispatch("GetAlbums");
+        const res = await axios.post(`/albums/${albumUuid}/join`);
+        if (res.status === 200) {
+          dispatch("GetAlbums");
+          dispatch("userAlbums/GetAlbums", {}, { root: true });
+          return res;
         }
       } catch (error) {
         console.log("Error : ", error);

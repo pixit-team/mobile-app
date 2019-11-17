@@ -1,5 +1,5 @@
 <template>
-  <Page class="page">
+  <Page class="page" @navigatingTo="onNavigatingTo">
     <ActionBar :title="albumInfo.name" class="action-bar">
       <NavigationButton
         text="Go Back"
@@ -7,12 +7,20 @@
         @tap="$navigateBack"
       />
       <ActionItem
+        v-if="album && inAlbum"
         android.systemIcon="ic_menu_add"
         android.position="actionBar"
-        @tap="addTapped"
+        @tap="joining || addTapped"
       ></ActionItem>
     </ActionBar>
     <StackLayout>
+      <Button
+        v-if="album && !inAlbum"
+        :isEnabled="!joining"
+        text="Join Album"
+        class="btn btn-primary btn-rounded-sm"
+        @tap="joinTapped"
+      />
       <FlexBoxLayout
         v-if="loading"
         style="justify-content:center; align-items:center"
@@ -30,11 +38,6 @@
               orientation="horizontal"
               class="album-item hr-dark m-10 p-10"
             >
-              <!-- <Label
-                class="font-weight-bold;"
-                style="color:white"
-                :text="item.url"
-              /> -->
               <Image
                 :src="item.img"
                 decodeWidth="400"
@@ -59,22 +62,36 @@
 <script>
 import axios from "axios";
 import PhotoView from "./PhotoView.vue";
+import Camera from "./Camera.vue";
+import { mapState, mapActions } from "vuex";
+import App from "../App.vue";
 
 export default {
-  props: ["albumInfo"],
+  props: ["albumInfo", "addedImage"],
   data() {
     return {
       loading: false,
-      album: null
+      album: null,
+      joining: false
     };
+  },
+  computed: {
+    ...mapState("userAlbums", ["added_photo"]),
+    ...mapState("user", ["user"]),
+    inAlbum() {
+      return (
+        this.album &&
+        this.album.members.findIndex(m => m.id === this.user.id) !== -1
+      );
+    }
   },
   async created() {
     this.loading = true;
     try {
       const res = await axios.get(`/albums/${this.albumInfo.uuid}`);
+      console.log(res);
+
       if (res.status === 200) {
-        // const res_dbg = await axios.get(`https://picsum.photos/v2/list`);
-        // this.album = { items: res_dbg.data };
         this.album = res.data.album;
         this.loading = false;
         return res;
@@ -85,19 +102,37 @@ export default {
     }
   },
   methods: {
+    ...mapActions("userAlbums", ["SetAddedPhoto"]),
+    ...mapActions("publicAlbums", ["JoinAlbum"]),
+    onNavigatingTo() {
+      if (this.added_photo) {
+        this.album.items.push(this.added_photo);
+        this.SetAddedPhoto(null);
+      }
+    },
     onItemTap(event) {
       this.$navigateTo(PhotoView, {
         props: {
-          photoInfo: { author: event.item.added_by, img: event.item.img }
+          photoInfo: {
+            author: this.album.members.find(m => m.id === event.item.addedBy)
+              .name,
+            img: event.item.img
+          }
         }
       });
     },
     addTapped() {
       this.$navigateTo(Camera, {
         props: {
-          albumUuid: this.this.albumInfo.uuid
+          albumUuid: this.albumInfo.uuid
         }
       });
+    },
+    async joinTapped() {
+      this.joining = true;
+      await this.JoinAlbum(this.album.uuid);
+      this.joining = false;
+      this.$navigateTo(App, { clearHistory: true });
     }
   }
 };

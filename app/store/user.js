@@ -40,8 +40,10 @@ export default {
         commit("SET_USER", res.data);
       }
     },
-    async Logout({ commit }) {
+    async Logout({ commit, dispatch }) {
       commit("LOGOUT");
+      dispatch("publicAlbums/Reset", {}, { root: true });
+      dispatch("userAlbums/Reset", {}, { root: true });
     },
     async Register({ dispatch }, credentials) {
       const firebaseToken = await firebase.getCurrentPushToken();
