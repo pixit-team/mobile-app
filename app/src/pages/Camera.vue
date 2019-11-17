@@ -5,6 +5,7 @@
     </ActionBar>
 
     <GridLayout rows="auto, *, auto, auto">
+      <span style="color: white">{{ base64Image }}</span>
       <Image
         id="image"
         row="1"
@@ -13,7 +14,7 @@
         margin="10"
       />
       <Button
-        v-if="cameraImage"
+        v-if="cameraImage == null"
         row="3"
         text="Take Picture"
         padding="10"
@@ -32,9 +33,12 @@
 
 <script>
 import { ImageSource } from "tns-core-modules/image-source";
+import AlbumView from "./AlbumView";
+import axios from "axios";
 
 export default {
   name: "Camera",
+  props: ["albumUuid"],
   data() {
     return {
       saveToGallery: false,
@@ -43,7 +47,8 @@ export default {
       width: 320,
       height: 240,
       cameraImage: null,
-      labelText: ""
+      labelText: "",
+      base64Image: null
     };
   },
   methods: {
@@ -66,6 +71,7 @@ export default {
               ImageSource.fromAsset(imageAsset).then(res => {
                 let myImageSource = res;
                 var base64 = myImageSource.toBase64String("jpeg", 100);
+                this.base64Image = base64;
               });
             })
             .catch(function(err) {
@@ -75,8 +81,22 @@ export default {
         function failure() {}
       );
     },
-    submitPicture() {
-        ;
+    async submitPicture() {
+      console.log("Base64 => ", this.base64Image);
+      try {
+        const res = await axios.post(`/albums/${this.albumUuid}/photo-add`, {
+          img: this.base64Image
+        });
+        if (res.status === 200) {
+          this.cameraImage = null;
+          this.base64Image = null;
+          const image = res.data.photo;
+          console.log("Image => ", image);
+          this.$navigateTo(AlbumView, { props: { image } });
+        }
+      } catch (e) {
+        console.log("error : ", e.message);
+      }
     }
   }
 };
